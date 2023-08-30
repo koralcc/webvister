@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan.ShopifyTokenHandlerService="true" scanPeriod="10 seconds">
+    <property name="log.path" value="${APPLICATION_LOG_DIR}"/>
+    <springProperty scope="context"  name="service-name" source="spring.application.name"/>
+    <springProperty scope="context" name="switch" source="xxl.job.executor.sls.switch" defaultValue="OFF"/>
+    <springProperty scope="context" name="sls.endpoint" source="sls.server.endpoint"
+                    defaultValue="cn-shenzhen.log.aliyuncs.com"/>
+    <springProperty scope="context" name="sls.access.key.id" source="sls.access.key.id" defaultValue="NULL"/>
+    <springProperty scope="context" name="sls.access.key.secret" source="sls.access.key.secret" defaultValue="NULL"/>
+    <springProperty scope="context" name="sls.project.name" source="sls.project.name"
+                    defaultValue="gerp-log-shenzhen"/>
+    <springProperty scope="context" name="sls.log.store" source="sls.log.store" defaultValue=" gerp-sz-multi-platform"/>
+
+    <property name="STDOUT_PATTEN"
+              value='[%clr(%d{yyyy-MM-dd HH:mm:ss.SSS})] %highlight([%level]) [%clr(${PID:- })] [%clr(%thread)] [%yellow(${service-name})] [%clr(%X{traceId:-0})] [%clr(%X{tenantId:-0})] [%clr(%logger{5}\:%line#%M)] %highlight([%msg]) %n'/>
+    <!--    [时间][日志等级][进程PID][线程名][服务名称][TraceID][租户ID][包首字母.类名][日志信息]-->
+    <property name="FILE_PATTEN"
+              value='[%d{yyyy-MM-dd HH:mm:ss.SSS}][%level][${PID:-0}][%thread][${service-name}][%X{traceId:-0}][%X{tenantId:-0}][%logger{5}\:%line#%M][%msg]%n'/>
+    <!--    [时间][日志等级][进程PID][线程名][服务名称][TraceID][租户ID][包首字母.类名][日志信息]-->
+
+    <!-- 彩色日志 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+
+    <!--输出到控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>${STDOUT_PATTEN}</Pattern>
+            <!-- 设置字符集 -->
+            <charset>UTF-8</charset>
+            <immediateFlush>false</immediateFlush>`
+        </encoder>
+    </appender>
+
+    <!-- 时间滚动输出 level为 DEBUG 日志 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文件的路径及文件名 -->
+        <file>${log.path}/${service-name}.log</file>
+        <!--日志文件输出格式-->
+        <encoder>
+            <Pattern>${FILE_PATTEN}</Pattern>
+            <charset>UTF-8</charset> <!-- 设置字符集 -->
+            <immediateFlush>false</immediateFlush>
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志归档 -->
+            <fileNamePattern>${log.path}/log-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文件保留天数-->
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!--为了防止进程退出时，内存中的数据丢失，请加上此选项-->
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+    <!-- 可用来获取StatusManager中的状态 -->
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+    <!-- 解决debug模式下循环发送的问题 -->
+    <logger name="org.apache.http.impl.conn.Wire" level="WARN"/>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <!--
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="loghubAppender"/>
+        -->
+    </root>
+
+    <logger name="org.springframework" level="info"/>
+    <logger name="org.apache" level="info"/>
+</configuration>

@@ -18,6 +18,7 @@ public class RedissonConfiguration {
     private String host;
     private String port;
     private String password;
+    private int database;
 
     @Bean(destroyMethod="shutdown")
     Redisson redisson(){
@@ -27,7 +28,7 @@ public class RedissonConfiguration {
                 .setConnectionPoolSize(30)
                 .setConnectionMinimumIdleSize(10)
                 .setPassword(password)
-                .setDatabase(8);
+                .setDatabase(database);
         return (Redisson) Redisson.create(config);
     }
 
@@ -53,5 +54,9 @@ public class RedissonConfiguration {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setDatabase(int database) {
+        this.database = database;
     }
 }
