@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.annotation.Resource;
 
 @Controller
@@ -62,7 +63,7 @@ public class TestController {
             return ResponseEntity.status(500).body("分布式锁获取失败");
         } finally {
             if (lock.isHeldByCurrentThread()) {
-                log.info("执行完释放锁{}",lock.getName());
+                log.info("执行完释放锁{}", lock.getName());
                 lock.unlock();
             }
         }
@@ -78,8 +79,13 @@ public class TestController {
 
     @PostMapping("/tenant")
     @ResponseBody
-    public ResponseEntity<String> tenant() {
+    public ResponseEntity<String> tenant() throws InterruptedException {
         // validate
+        log.info("租户请求...");
+        Thread t = new Thread(() -> log.info("thread 执行。。"), "tenantThread");
+        t.start();
+        t.join();
+        log.info("租户请求完毕。");
         return ResponseEntity.ok(TenantContext.getTenantCode());
     }
 }

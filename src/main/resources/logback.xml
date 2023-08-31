@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan.ShopifyTokenHandlerService="true" scanPeriod="10 seconds">
     <property name="log.path" value="${APPLICATION_LOG_DIR}"/>
-    <springProperty scope="context"  name="service-name" source="spring.application.name"/>
+    <springProperty scope="context" name="service-name" source="spring.application.name"/>
     <springProperty scope="context" name="switch" source="xxl.job.executor.sls.switch" defaultValue="OFF"/>
     <springProperty scope="context" name="sls.endpoint" source="sls.server.endpoint"
                     defaultValue="cn-shenzhen.log.aliyuncs.com"/>
@@ -12,7 +12,7 @@
     <springProperty scope="context" name="sls.log.store" source="sls.log.store" defaultValue=" gerp-sz-multi-platform"/>
 
     <property name="STDOUT_PATTEN"
-              value='[%clr(%d{yyyy-MM-dd HH:mm:ss.SSS})] %highlight([%level]) [%clr(${PID:- })] [%clr(%thread)] [%yellow(${service-name})] [%clr(%X{traceId:-0})] [%clr(%X{tenantId:-0})] [%clr(%logger{5}\:%line#%M)] %highlight([%msg]) %n'/>
+              value='[%d{yyyy-MM-dd HH:mm:ss.SSS}] %highlight([%level]) [%magenta(${PID:- })] [%yellow(%thread)] [${service-name}] [%clr(%X{traceId:-0})] [%clr(%X{tenantId:-0})] [%cyan(%logger{56}\:%line#%M)] %highlight([%msg]) %n'/>
     <!--    [时间][日志等级][进程PID][线程名][服务名称][TraceID][租户ID][包首字母.类名][日志信息]-->
     <property name="FILE_PATTEN"
               value='[%d{yyyy-MM-dd HH:mm:ss.SSS}][%level][${PID:-0}][%thread][${service-name}][%X{traceId:-0}][%X{tenantId:-0}][%logger{5}\:%line#%M][%msg]%n'/>
@@ -24,7 +24,6 @@
                     converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
     <conversionRule conversionWord="wEx"
                     converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
-
 
     <!--输出到控制台-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
