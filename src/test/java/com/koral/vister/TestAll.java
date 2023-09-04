@@ -1,7 +1,11 @@
 package com.koral.vister;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.BoundListOperations;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.ArrayList;
 import java.util.concurrent.*;
@@ -10,6 +14,8 @@ import java.util.stream.IntStream;
 @SpringBootTest
 public class TestAll {
 
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
     @Test
     public void testCallable() throws ExecutionException, InterruptedException {
         Callable<String> callable = () -> "hello world";
@@ -87,6 +93,15 @@ public class TestAll {
 
         StaticA.printa();
         StaticB.printa();
+    }
+
+
+    @Test
+    public void testDCCC() {
+        BoundListOperations ops = redisTemplate.boundListOps("red_packet_list_5");
+        ListOperations listOperations = redisTemplate.opsForList();
+        Long size = listOperations.size("red_packet_list_5");
+        System.out.println(size);
     }
 
     public static class A {
