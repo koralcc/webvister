@@ -1,22 +1,29 @@
 package com.koral.vister.controller;
 
 import com.koral.vister.tenant.TenantContext;
+import com.koral.vister.test.ReferenceCountingGC;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RLock;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.HyperLogLogOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
-@Controller
+@RestController
 @Slf4j
 public class TestController {
     @Resource(name = "stringRedisTemplate")
@@ -30,6 +37,7 @@ public class TestController {
     @Resource
     private Redisson redisson;
 
+    private boolean lazyInitialization;
     @GetMapping("/index")
     @ResponseBody
     public Long index() {
@@ -87,5 +95,43 @@ public class TestController {
         t.join();
         log.info("租户请求完毕。");
         return ResponseEntity.ok(TenantContext.getTenantCode());
+    }
+
+    @PostMapping("/gc")
+    @ResponseBody
+    public ResponseEntity<String> gc_loopDepend() throws InterruptedException {
+        // validate
+        ReferenceCountingGC.testGC();
+        return ResponseEntity.ok(null);
+    }
+
+
+    @GetMapping("/change-username")
+    @ResponseBody
+    public String setCookie(HttpServletResponse response, HttpServletRequest request) {
+        // 创建一个 cookie
+        Cookie cookie = new Cookie("username", "Jovan");
+        //设置 cookie过期时间
+        cookie.setMaxAge(10); // expires in 7 days
+        //添加到 response 中
+        response.addCookie(cookie);
+
+        return "Username is changed!";
+    }
+
+    @GetMapping("/binder")
+    @ResponseBody
+    public String getBinder() {
+        TestController testController = Binder.get(environment).bind("spring.main", Bindable.of(TestController.class)).get();
+        Map<String, String> stringStringMap = Binder.get(environment).bind("spring.main", Bindable.mapOf(String.class, String.class)).get();
+        return "";
+    }
+
+    public void setLazyInitialization(boolean lazyInitialization) {
+        this.lazyInitialization = lazyInitialization;
+    }
+
+    public boolean isLazyInitialization() {
+        return lazyInitialization;
     }
 }

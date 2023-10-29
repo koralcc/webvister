@@ -35,3 +35,12 @@ spring:
       stat-view-servlet: #访问监控网页的登录用户名和密码
         login-username: druid
         login-password: druid
+  main:
+    lazy-initialization: false
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'startup'

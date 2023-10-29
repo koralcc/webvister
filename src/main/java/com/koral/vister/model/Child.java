@@ -1,0 +1,40 @@
+package com.koral.vister.model;
+
+public class Child {
+    private String name;
+    private Integer age;
+    private String hoppy;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getHoppy() {
+        return hoppy;
+    }
+
+    public void setHoppy(String hoppy) {
+        this.hoppy = hoppy;
+    }
+
+    @Override
+    public String toString() {
+        return "Child{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", hoppy='" + hoppy + '\'' +
+                '}';
+    }
+}
