@@ -37,10 +37,13 @@ spring:
         login-password: druid
   main:
     lazy-initialization: false
-
+    allow-circular-references: true
 
 management:
   endpoints:
     web:
       exposure:
         include: 'startup'
+
+country:
+  name: "美国"

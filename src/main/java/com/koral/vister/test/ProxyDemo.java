@@ -12,21 +12,10 @@ public class ProxyDemo {
     public static void main(String[] args) {
         System.out.println("**********************JDK Proxy********************************");
         jdkProxy();
+        jdk2Proxy();
         System.out.println("**********************CGLIB Proxy******************************");
         cglibProxy();
-    }
-
-    private static void cglibProxy() {
-        // 通过CGLIB动态代理获取代理对象的过程
-        // 创建Enhancer对象，类似于JDK动态代理的Proxy类
-        Enhancer enhancer = new Enhancer();
-        // 设置目标类的字节码文件
-        enhancer.setSuperclass(Student.class);
-        // 设置回调函数
-        enhancer.setCallback(new MyInterceptor());
-
-        Student stu = (Student) enhancer.create();
-        stu.studing();
+        cglibProxy2();
     }
 
     private static void jdkProxy() {
@@ -46,6 +35,53 @@ public class ProxyDemo {
         });
         te.sleep();
         te.eat();
+    }
+    private static void jdk2Proxy() {
+        Tenent tenent = new Tenent();
+        tenent.setName("tom");
+        Person te = (Person)Proxy.newProxyInstance(Tenent.class.getClassLoader(), new Class[]{Person.class}, new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                // proxy 代表代理对象
+                // method 代表正在执行的方法
+                // args 代表参数
+                System.out.println("代理方法调用前");
+                Object invoke = method.invoke(tenent, args);
+                System.out.println("代理方法调用后");
+                return invoke;
+            }
+        });
+        te.sleep();
+        te.eat();
+    }
+
+    private static void cglibProxy() {
+        Student student = new Student();
+        student.setName("tom ");
+        // 通过CGLIB动态代理获取代理对象的过程
+        // 创建Enhancer对象，类似于JDK动态代理的Proxy类
+        Enhancer enhancer = new Enhancer();
+        // 设置目标类的字节码文件
+        enhancer.setSuperclass(Student.class);
+        // 设置回调函数
+        enhancer.setCallback(new MyInterceptor(student));
+
+        Student stu = (Student) enhancer.create();
+        stu.studing();
+    }
+
+    private static void cglibProxy2() {
+        Student student = new Student();
+        student.setName("koral ");
+        // 通过CGLIB动态代理获取代理对象的过程
+        // 创建Enhancer对象，类似于JDK动态代理的Proxy类
+        Enhancer enhancer = new Enhancer();
+        // 设置目标类的字节码文件
+        enhancer.setSuperclass(Student.class);
+        // 设置回调函数
+        enhancer.setCallback(new MyInterceptor(student));
+        Student stu = (Student) enhancer.create();
+        stu.studing();
     }
 
     static class Tenent implements Person{
@@ -74,7 +110,7 @@ public class ProxyDemo {
     static class Student{
 
         public void studing(){
-            System.out.println("学生学习...");
+            System.out.println( this.getName()+ "学生学习...");
         }
 
         private String name;
@@ -99,6 +135,12 @@ public class ProxyDemo {
     }
 
     static class MyInterceptor implements MethodInterceptor{
+       private Student student ;
+
+        public MyInterceptor(){}
+        public MyInterceptor(Student student) {
+            this.student = student;
+        }
 
         @Override
         public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
@@ -110,9 +152,10 @@ public class ProxyDemo {
             // 注意这里是调用invokeSuper而不是invoke，否则死循环
             // methodProxy.invokeSuper执行的是原始类的方法；
             // method.invoke执行的是子类的方法
-            Object result = methodProxy.invokeSuper(o, objects);
+//            Object result1 = methodProxy.invokeSuper(o,objects);
+            Object result2 = method.invoke(student, objects);
             after(method.getName());
-            return result;
+            return result2;
         }
 
         private void after(String name) {

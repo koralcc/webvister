@@ -12,7 +12,7 @@ public class BeanDefinitionDemo {
         extracted();
     }
 
-    private static void extracted() {
+    private static void extracted()  {
         String parentName = "parent";
         String childName = "child";
         MutablePropertyValues propertyValues = new MutablePropertyValues();
