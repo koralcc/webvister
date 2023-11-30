@@ -11,10 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.HyperLogLogOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -22,6 +19,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Slf4j
@@ -38,6 +36,7 @@ public class TestController {
     private Redisson redisson;
 
     private boolean lazyInitialization;
+
     @GetMapping("/index")
     @ResponseBody
     public Long index() {
@@ -52,11 +51,10 @@ public class TestController {
 
     }
 
-    @PostMapping("/alipay")
-    @ResponseBody
-    public ResponseEntity<String> alipay() {
+    @PostMapping("/alipay/{orderSN}")
+    public ResponseEntity<String> alipay(@PathVariable("orderSN") String orderSN) {
         // validate
-        RLock lock = redisson.getLock("alipaylock:orderid");
+        RLock lock = redisson.getLock("alipaylock:"+orderSN);
         try {
             boolean b = lock.tryLock();
             if (!b) {
@@ -64,7 +62,7 @@ public class TestController {
                 return ResponseEntity.status(500).body("正在执行，请勿频繁操作");
             }
             log.info("执行alipay支付逻辑");
-            Thread.sleep(1000);
+            Thread.sleep(100000);
             return ResponseEntity.ok("hello");
         } catch (Exception e) {
             log.error("分布式锁获取异常");

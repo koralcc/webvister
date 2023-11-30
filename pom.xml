@@ -32,12 +32,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
             <exclusions>
-            <!-- 不依赖Redis的异步客户端lettuce -->
-            <exclusion>
-                <groupId>io.lettuce</groupId>
-                <artifactId>lettuce-core</artifactId>
-            </exclusion>
-        </exclusions>
+                <!-- 不依赖Redis的异步客户端lettuce -->
+                <exclusion>
+                    <groupId>io.lettuce</groupId>
+                    <artifactId>lettuce-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--redisson-->
         <dependency>
@@ -114,6 +114,12 @@
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>3.2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjdk.jol</groupId>
+            <artifactId>jol-core</artifactId>
+            <version>0.10</version>
         </dependency>
 
         <dependency>

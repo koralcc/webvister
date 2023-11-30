@@ -16,6 +16,8 @@ public class App {
 
     public static void main(String[] args) {
 
+        String s = new String("aaa");
+
         SpringApplication application = new SpringApplication(App.class);
         application.setApplicationStartup(new BufferingApplicationStartup(10000));
 // 11      application.setApplicationStartup(new FlightRecorderApplicationStartup());

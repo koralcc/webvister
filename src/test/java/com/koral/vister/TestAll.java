@@ -30,7 +30,7 @@ public class TestAll {
     public void testCallable() throws ExecutionException, InterruptedException {
         Callable<String> callable = () -> "hello world";
         FutureTask<String> stringFutureTask = new FutureTask<>(callable);
-        Thread thread = new Thread(new FutureTask<>(callable));
+        Thread thread = new Thread(stringFutureTask);
         thread.start();
         System.out.println(stringFutureTask.get());
     }
