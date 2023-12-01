@@ -19,11 +19,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 @RestController
 @Slf4j
-public class TestController {
+public class AlipayController {
     @Resource(name = "stringRedisTemplate")
     private StringRedisTemplate redisTemplate;
 
@@ -54,7 +54,7 @@ public class TestController {
     @PostMapping("/alipay/{orderSN}")
     public ResponseEntity<String> alipay(@PathVariable("orderSN") String orderSN) {
         // validate
-        RLock lock = redisson.getLock("alipaylock:"+orderSN);
+        RLock lock = redisson.getLock("alipaylock" + orderSN);
         try {
             boolean b = lock.tryLock();
             if (!b) {
@@ -62,12 +62,14 @@ public class TestController {
                 return ResponseEntity.status(500).body("正在执行，请勿频繁操作");
             }
             log.info("执行alipay支付逻辑");
-            Thread.sleep(100000);
             return ResponseEntity.ok("hello");
         } catch (Exception e) {
             log.error("分布式锁获取异常");
             return ResponseEntity.status(500).body("分布式锁获取失败");
         } finally {
+            /**
+             * 主线程执行完毕后需要手动释放，因为不释放会一直被续期
+             */
             if (lock.isHeldByCurrentThread()) {
                 log.info("执行完释放锁{}", lock.getName());
                 lock.unlock();
@@ -120,7 +122,7 @@ public class TestController {
     @GetMapping("/binder")
     @ResponseBody
     public String getBinder() {
-        TestController testController = Binder.get(environment).bind("spring.main", Bindable.of(TestController.class)).get();
+        AlipayController testController = Binder.get(environment).bind("spring.main", Bindable.of(AlipayController.class)).get();
         Map<String, String> stringStringMap = Binder.get(environment).bind("spring.main", Bindable.mapOf(String.class, String.class)).get();
         return "";
     }
