@@ -10,7 +10,7 @@ import java.util.Collections;
 
 public class TemplateGenerate {
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://106.55.60.108:3306/k_order?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false", "root", "cjy92/mm")
+        FastAutoGenerator.create("jdbc:mysql://10.6.15.15/join_ucenter?useSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=Asia/Shanghai", "u_dev", "8APGj4Nk7SCxDYQBPUrY")
                 .globalConfig(builder -> {
                     builder.author("koral") // 设置作者
                             .enableSwagger() // 开启 swagger 模式
@@ -26,12 +26,12 @@ public class TemplateGenerate {
                     return typeRegistry.getColumnType(metaInfo);
                 }))
                 .packageConfig(builder -> {
-                    builder.parent("com.koral.vister.common") // 设置父包名
+                    builder.parent("com.join.uc") // 设置父包名
                             //.moduleName("mapper") // 设置父包模块名
                             .pathInfo(Collections.singletonMap(OutputFile.xml, "D:\\softwares\\gdx\\webvisitercount\\src\\main\\resources\\com\\koral\\vister\\server\\mapper")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("T_USER_RED_PACKET") // 设置需要生成的表名
+                    builder.addInclude("uc_todo_record")// 设置需要生成的表名
                             .addTablePrefix("t_", "c_"); // 设置过滤表前缀
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

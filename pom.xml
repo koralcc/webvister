@@ -126,10 +126,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.luues.boot</groupId>
-            <artifactId>spring-boot-starter-rabbitmq</artifactId>
-            <version>1.0.3.7.RELEASE</version>
-        </dependency>
+
     </dependencies>
 </project>
