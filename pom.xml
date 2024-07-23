@@ -69,6 +69,11 @@
             <version>8.0.33</version>
         </dependency>
         <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>21.1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.5.3.2</version>
@@ -126,6 +131,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+        <!--数据库是19c对应的的依赖-->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>19.15.0.0</version>
+        </dependency>
 
+        <!--不支持的字符集 (在类路径中添加 orai18n.jar): ZHS16GBK   注：这个依赖基本跟上面Oracle数据版本一致-->
+        <dependency>
+            <groupId>com.oracle.database.nls</groupId>
+            <artifactId>orai18n</artifactId>
+            <version>19.15.0.0</version>
+        </dependency>
     </dependencies>
 </project>
