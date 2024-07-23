@@ -11,7 +11,7 @@ import java.util.Collections;
 public class TemplateGenerate {
     public static void main(String[] args) {
 //        FastAutoGenerator.create("jdbc:mysql://10.6.15.15/join_date_temp?useSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=Asia/Shanghai", "u_temp_data", "zZqCT9$*nEKQ")
-          FastAutoGenerator.create("jdbc:oracle:thin:@10.6.4.152:1521:orcl?characterEncoding=UTF-8&NCHAR_CHARACTERSET=ZHS16GBK", "test", "test123")
+          FastAutoGenerator.create("jdbc:oracle:thin:@10.6.4.152:1521:orcl", "test", "test123")
         .globalConfig(builder -> {
                     builder.author("koral") // 设置作者
                             .enableSwagger() // 开启 swagger 模式
